@@ -1,8 +1,0 @@
-.idea
-.vscode
-
-bin/*
-!bin/was_chatted
-cmake-build-debug
-
-*.pdf
