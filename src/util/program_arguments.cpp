@@ -27,10 +27,10 @@ ProgramArguments getProgramArguments(int argc, char *argv[]) {
             case 'h':
                 cout << "Usage: ./what_the_music REQUIRED OPTIONAL" << endl
                      << "Required arguments:" << endl
-                     << " -d database_folder    : folder containing the music files to be inserted in the database (string)" << endl
-                     << " -q queries_folder     : folder containing the music files to be queried on the database (string)" << endl
-                     << " -c compression_method : compression method of the music files (string)" << endl
-                     << "                       : --- valid args: maxfreqs, gzip, bzip2, lzma, zstd" << endl
+                     << " -d database_folder    : folder containing the music signatures to be inserted in the database (string)" << endl
+                     << " -q queries_folder     : folder containing the music signatures to be queried on the database (string)" << endl
+                     << " -c compression_method : compression method of the music signatures (string)" << endl
+                     << "                       : --- valid args: gzip, bzip2, lzma, zstd" << endl
                      << "Optional arguments:" << endl
                      << " -h                    : shows how to use the program" << endl
                      << " -l log_file_path      : path to the file where the log will be written (string, default is empty)" << endl;

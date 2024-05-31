@@ -13,8 +13,8 @@ struct ProgramArguments {
 
     // overload the << operator to print the program arguments
     friend ostream &operator<<(ostream &os, const ProgramArguments &args) {
-        os << "(-d) Source of music files in database: " << args.databaseFolder << endl;
-        os << "(-q) Source of music files to query: " << args.queriesFolder << endl;
+        os << "(-d) Source of music signatures in database: " << args.databaseFolder << endl;
+        os << "(-q) Source of music signatures to query: " << args.queriesFolder << endl;
         os << "(-c) Compression method being used: " << args.compressionMethod << endl;
         os << "(-l) Log file path: " << args.logFilePath;
         return os;
