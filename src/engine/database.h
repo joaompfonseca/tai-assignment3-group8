@@ -3,21 +3,30 @@
 
 #include <string>
 #include <vector>
+#include <unordered_map>
 #include "compressor.h"
 
 using namespace std;
 
 class Database {
 public:
-    explicit Database(Compressor &compressor);
+    explicit Database(string databaseFolder, Compressor &compressor);
 
-    void add(string label, string signature);
+    void load();
 
     vector<tuple<string, double>> query(string signature);
 
 private:
+    string databaseFolder;
     Compressor compressor;
-    vector<tuple<string, string, unsigned int>> storage; // <label, signature, bits>
+    unordered_map<string, unsigned int> cacheBits; // label: bits
+    unordered_map<string, tuple<string, unsigned int>> storage; // label: <signature, bits>
+
+    void loadCacheBits();
+
+    void saveCacheBits();
+
+    void add(string label, string signature);
 };
 
 #endif //TAI_ASSIGNMENT3_GROUP8_DATABASE_H

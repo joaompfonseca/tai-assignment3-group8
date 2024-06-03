@@ -27,6 +27,10 @@ Compressor::Compressor(string name) {
     this->name = name;
 }
 
+string Compressor::getName() {
+    return name;
+}
+
 unsigned int Compressor::getBits(string content) {
     unsigned int bytes = 0;
     int sysResult;

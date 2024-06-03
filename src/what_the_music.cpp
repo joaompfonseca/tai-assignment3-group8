@@ -19,21 +19,8 @@ int main(int argc, char *argv[]) {
     Compressor compressor = Compressor(args.compressionMethod);
 
     // instantiate database
-    Database database = Database(compressor);
-
-    // add entries to database
-    for (const auto &entry: std::filesystem::directory_iterator(args.databaseFolder)) {
-        string filePath = entry.path().string();
-        if (filePath.substr(filePath.find_last_of('.') + 1) != "freqs") {
-            continue;
-        }
-        // read signature from file
-        FileReader fileReader = FileReader(filePath);
-        fileReader.read();
-        string signature = fileReader.getContent();
-        // add entry to database
-        database.add(filePath, signature);
-    }
+    Database database = Database(args.databaseFolder, compressor);
+    database.load();
 
     // query database
     for (const auto &entry: std::filesystem::directory_iterator(args.queriesFolder)) {

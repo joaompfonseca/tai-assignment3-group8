@@ -1,18 +1,69 @@
 #include "database.h"
+#include "../util/file_reader.h"
 #include <fstream>
 #include <tuple>
 #include <algorithm>
 #include <iostream>
+#include <filesystem>
 
 using namespace std;
 
-Database::Database(Compressor &compressor) : compressor(compressor) {
-    storage = vector<tuple<string, string, unsigned int>>(); // <label, signature, bits>
+Database::Database(string databaseFolder, Compressor &compressor) : compressor(compressor) {
+    this->databaseFolder = databaseFolder;
+    this->storage = unordered_map<string, tuple<string, unsigned int>>();
+    this->cacheBits = unordered_map<string, unsigned int>();
 }
 
 void Database::add(string label, string signature) {
-    unsigned int bits = compressor.getBits(signature);
-    storage.emplace_back(label, signature, bits);
+    unsigned int bits;
+    if (cacheBits.find(label) != cacheBits.end()) {
+        bits = cacheBits[label];
+    } else {
+        bits = compressor.getBits(signature);
+        cacheBits[label] = bits;
+    }
+    storage[label] = make_tuple(signature, bits);
+}
+
+void Database::loadCacheBits() {
+    string cacheFilePath = databaseFolder + "/" + compressor.getName() + ".cache";
+    ifstream file(cacheFilePath);
+    string line;
+    while (getline(file, line)) {
+        size_t delimiter = line.find(';');
+        string label = line.substr(0, delimiter);
+        unsigned int bits = stoi(line.substr(delimiter + 1));
+        cacheBits[label] = bits;
+    }
+}
+
+void Database::saveCacheBits() {
+    string cacheFilePath = databaseFolder + "/" + compressor.getName() + ".cache";
+    ofstream file(cacheFilePath);
+    for (auto &[label, bits]: cacheBits) {
+        file << label << ";" << bits << endl;
+    }
+}
+
+void Database::load() {
+    // load bits from cache
+    loadCacheBits();
+
+    for (const auto &entry: filesystem::directory_iterator(databaseFolder)) {
+        string filePath = entry.path().string();
+        if (filePath.substr(filePath.find_last_of('.') + 1) != "freqs") {
+            continue;
+        }
+        // read signature from file
+        FileReader fileReader = FileReader(filePath);
+        fileReader.read();
+        string signature = fileReader.getContent();
+        // add entry to database
+        add(filePath, signature);
+    }
+
+    // save bits to cache
+    saveCacheBits();
 }
 
 vector<tuple<string, double>> Database::query(string qSignature) {
@@ -21,10 +72,9 @@ vector<tuple<string, double>> Database::query(string qSignature) {
     // Calculate bits of the query signature
     unsigned int qBits = compressor.getBits(qSignature);
 
-    for (auto &entry: storage) {
-        string eLabel = get<0>(entry);
-        string eSignature = get<1>(entry);
-        unsigned int eBits = get<2>(entry);
+    for (auto &[eLabel, eContent]: storage) {
+        string eSignature = get<0>(eContent);
+        unsigned int eBits = get<1>(eContent);
 
         // Concatenate query and entry signatures, calculate bits
         string qeSignature = qSignature + eSignature;
