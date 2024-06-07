@@ -7,6 +7,7 @@
 #include <filesystem>
 
 using namespace std;
+using namespace std::filesystem;
 
 Database::Database(string databaseFolder, Compressor &compressor) : compressor(compressor) {
     this->databaseFolder = databaseFolder;
@@ -49,17 +50,17 @@ void Database::load() {
     // load bits from cache
     loadCacheBits();
 
-    for (const auto &entry: filesystem::directory_iterator(databaseFolder)) {
-        string filePath = entry.path().string();
-        if (filePath.substr(filePath.find_last_of('.') + 1) != "freqs") {
+    for (const auto &entry: directory_iterator(databaseFolder)) {
+        path filePath = entry.path().string();
+        if (filePath.has_extension() && filePath.extension().string() != ".freqs") {
             continue;
         }
         // read signature from file
-        FileReader fileReader = FileReader(filePath);
+        FileReader fileReader = FileReader(filePath.string());
         fileReader.read();
         string signature = fileReader.getContent();
         // add entry to database
-        add(filePath, signature);
+        add(filePath.stem().string(), signature);
     }
 
     // save bits to cache

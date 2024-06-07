@@ -6,6 +6,7 @@
 #include "util/program_arguments.h"
 
 using namespace std;
+using namespace std::filesystem;
 
 int main(int argc, char *argv[]) {
     // parse program arguments
@@ -23,17 +24,18 @@ int main(int argc, char *argv[]) {
     database.load();
 
     // query database
-    for (const auto &entry: std::filesystem::directory_iterator(args.queriesFolder)) {
-        string filePath = entry.path().string();
-        if (filePath.substr(filePath.find_last_of('.') + 1) != "freqs") {
+    for (const auto &entry: directory_iterator(args.queriesFolder)) {
+        // get path not the string
+        path filePath = entry.path();
+        if (filePath.has_extension() && filePath.extension().string() != ".freqs") {
             continue;
         }
         // read signature from file
-        FileReader fileReader = FileReader(filePath);
+        FileReader fileReader = FileReader(filePath.string());
         fileReader.read();
         string signature = fileReader.getContent();
         // query database
-        cout << "Querying " << filePath << "..." << endl;
+        cout << "Querying " << filePath.stem().string() << "..." << endl;
         vector<tuple<basic_string<char>, double>> result = database.query(signature);
         // print results
         cout << "Results" << endl;
