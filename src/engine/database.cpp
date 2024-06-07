@@ -67,29 +67,34 @@ void Database::load() {
     saveCacheBits();
 }
 
-vector<tuple<string, double>> Database::query(string qSignature) {
+vector<tuple<string, double>> Database::query(string qSignature, unsigned int topK) {
     vector<tuple<string, double>> result;
 
-    // Calculate bits of the query signature
+    // calculate bits of the query signature
     unsigned int qBits = compressor.getBits(qSignature);
 
     for (auto &[eLabel, eContent]: storage) {
         string eSignature = get<0>(eContent);
         unsigned int eBits = get<1>(eContent);
 
-        // Concatenate query and entry signatures, calculate bits
+        // concatenate query and entry signatures, calculate bits
         string qeSignature = qSignature + eSignature;
         unsigned int qeBits = compressor.getBits(qeSignature);
 
-        // Calculate the Normalized Compression Distance
+        // calculate the Normalized Compression Distance
         double ncd = ((double) (qeBits - min(qBits, eBits))) / ((double) max(qBits, eBits));
         result.emplace_back(eLabel, ncd);
     }
 
-    // Sort the results by NCD
+    // sort the results by NCD
     sort(result.begin(), result.end(), [](const tuple<string, double> &a, const tuple<string, double> &b) {
         return get<1>(a) < get<1>(b);
     });
+
+    // return only the top K results
+    if (result.size() > topK) {
+        result.resize(topK);
+    }
 
     return result;
 }

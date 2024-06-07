@@ -45,7 +45,7 @@ int main(int argc, char *argv[]) {
 
         // query database
         cout << "Querying " << filePath.stem().string() << "..." << endl;
-        vector<tuple<basic_string<char>, double>> result = database.query(signature);
+        vector<tuple<basic_string<char>, double>> result = database.query(signature, args.topK);
 
         // print or log results
         if (args.logFilePath.empty()) {
@@ -54,10 +54,9 @@ int main(int argc, char *argv[]) {
                 cout << "   " << get<0>(entry) << " (" << get<1>(entry) << ")" << endl;
             }
         } else {
-            vector<string> output = {filePath.stem().string()}; // query file name
+            vector<string> output = {filePath.stem().string()};
             for (const auto &entry: result) {
-                output.push_back(get<0>(entry)); // music file name
-                output.push_back(to_string(get<1>(entry))); // similarity
+                output.push_back(get<0>(entry));
             }
             logger.append(output);
         }
