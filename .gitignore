@@ -4,7 +4,7 @@
 .vscode
 
 bin/*
-!bin/was_chatted
+!bin/what_the_music
 cmake-build-debug
 
 *.pdf
