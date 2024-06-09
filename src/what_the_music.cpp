@@ -18,8 +18,7 @@ int main(int argc, char *argv[]) {
          << args << endl;
 
     // instantiate compressor
-    string tempFolder = args.queriesFolder; // use this folder for now
-    Compressor compressor = Compressor(args.compressionMethod, tempFolder);
+    Compressor compressor = Compressor(args.compressionMethod, args.tempFolder);
 
     // instantiate database
     Database database = Database(args.databaseFolder, compressor);

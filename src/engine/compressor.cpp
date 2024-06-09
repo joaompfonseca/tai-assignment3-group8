@@ -8,7 +8,9 @@
 using namespace std;
 
 Compressor::Compressor(string name, string tempFolder) {
+    ostringstream command;
     int sysResult;
+
     if (name == "gzip") {
         sysResult = system("gzip --version > /dev/null 2>&1");
     } else if (name == "bzip2") {
@@ -26,6 +28,13 @@ Compressor::Compressor(string name, string tempFolder) {
         exit(EXIT_FAILURE);
     }
     this->name = name;
+
+    command << "mkdir -p " << tempFolder;
+    sysResult = system(command.str().c_str());
+    if (sysResult != 0) {
+        cerr << "Error creating temporary folder: " << tempFolder << endl;
+        exit(EXIT_FAILURE);
+    }
     this->tempFolder = tempFolder;
 }
 

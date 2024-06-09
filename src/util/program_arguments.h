@@ -11,6 +11,7 @@ struct ProgramArguments {
     string compressionMethod;
     unsigned int topK;
     string logFilePath;
+    string tempFolder;
 
     // overload the << operator to print the program arguments
     friend ostream &operator<<(ostream &os, const ProgramArguments &args) {
@@ -18,7 +19,8 @@ struct ProgramArguments {
         os << "(-q) Source of music signatures to query: " << args.queriesFolder << endl;
         os << "(-c) Compression method being used: " << args.compressionMethod << endl;
         os << "(-k) Top k results to be returned: " << args.topK << endl;
-        os << "(-l) Log file path: " << args.logFilePath;
+        os << "(-l) Log file path: " << args.logFilePath << endl;
+        os << "(-t) Temporary folder: " << args.tempFolder;
         return os;
     }
 };

@@ -9,7 +9,7 @@ ProgramArguments getProgramArguments(int argc, char *argv[]) {
     ProgramArguments args;
     unordered_set<char> requiredArgs;
     int opt;
-    while ((opt = getopt(argc, argv, "d:q:c:k:l:h")) != -1) {
+    while ((opt = getopt(argc, argv, "d:q:c:k:l:t:h")) != -1) {
         switch (opt) {
             case 'd':
                 args.databaseFolder = optarg;
@@ -39,6 +39,9 @@ ProgramArguments getProgramArguments(int argc, char *argv[]) {
             case 'l':
                 args.logFilePath = optarg;
                 break;
+            case 't':
+                args.tempFolder = optarg;
+                break;
             case 'h':
                 cout << "Usage: ./what_the_music REQUIRED OPTIONAL" << endl
                      << "Required arguments:" << endl
@@ -49,10 +52,11 @@ ProgramArguments getProgramArguments(int argc, char *argv[]) {
                      << " -k top_k_results      : number of top-k results to be returned (int)" << endl
                      << "Optional arguments:" << endl
                      << " -h                    : shows how to use the program" << endl
-                     << " -l log_file_path      : path to the file where the log will be written (string, default is empty)" << endl;
+                     << " -l log_file_path      : path to the file where the log will be written (string, default is empty)" << endl
+                     << " -t temp_folder        : folder to store temporary files (string, default is queries_folder)" << endl;
                 exit(EXIT_SUCCESS);
             case '?':
-                if (optopt == 'd' || optopt == 'q' || optopt == 'c' || optopt == 'k' || optopt == 'l') {
+                if (optopt == 'd' || optopt == 'q' || optopt == 'c' || optopt == 'k' || optopt == 'l' || optopt == 't') {
                     cerr << "Option -" << static_cast<char>(optopt) << " requires an argument." << endl;
                 } else {
                     cerr << "Unknown option -" << static_cast<char>(optopt) << endl;
@@ -68,6 +72,10 @@ ProgramArguments getProgramArguments(int argc, char *argv[]) {
             cerr << "Error: Option -" << requiredArg << " is required." << endl;
             exit(EXIT_FAILURE);
         }
+    }
+    // Ensure that optional arguments have default values if not provided
+    if (args.tempFolder.empty()) {
+        args.tempFolder = args.queriesFolder;
     }
     return args;
 }
