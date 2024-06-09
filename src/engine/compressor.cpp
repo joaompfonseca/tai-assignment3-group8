@@ -2,6 +2,7 @@
 #include <fstream>
 #include <iostream>
 #include <stdlib.h>
+#include <sstream>
 
 
 using namespace std;
@@ -31,40 +32,52 @@ string Compressor::getName() {
     return name;
 }
 
-unsigned int Compressor::getBits(string content) {
+unsigned int Compressor::getBits(string content, string tempFolder) {
     unsigned int bytes = 0;
+    ostringstream command;
     int sysResult;
 
+    string tempContent = tempFolder + "/content.temp";
+    string tempBytes = tempFolder + "/bytes.temp";
+
     // Create a temporary file with the content to compress
-    ofstream contentFile("content.temp");
+    ofstream contentFile(tempContent);
     contentFile << content;
     contentFile.close();
 
     // compress the file and save number of bytes
     if (name == "gzip") {
-        sysResult = system("gzip -fk content.temp > /dev/null 2>&1") + system("wc -c content.temp.gz > bytes.temp");
+        command << "gzip -fk " << tempContent << " > /dev/null 2>&1"
+                << " && wc -c " << tempContent << ".gz > " << tempBytes;
     } else if (name == "bzip2") {
-        sysResult = system("bzip2 -fk content.temp > /dev/null 2>&1") + system("wc -c content.temp.bz2 > bytes.temp");
+        command << "bzip2 -fk " << tempContent << " > /dev/null 2>&1"
+                << " && wc -c " << tempContent << ".bz2 > " << tempBytes;
     } else if (name == "lzma") {
-        sysResult = system("lzma -fk content.temp > /dev/null 2>&1") + system("wc -c content.temp.lzma > bytes.temp");
+        command << "lzma -fk " << tempContent << " > /dev/null 2>&1"
+                << " && wc -c " << tempContent << ".lzma > " << tempBytes;
     } else if (name == "zstd") {
-        sysResult = system("zstd -fk content.temp > /dev/null 2>&1") + system("wc -c content.temp.zst > bytes.temp");
+        command << "zstd -fk " << tempContent << " > /dev/null 2>&1"
+                << " && wc -c " << tempContent << ".zst > " << tempBytes;
     } else {
         cerr << "Unsupported compressor: " << name << endl;
         exit(EXIT_FAILURE);
     }
+
+    sysResult = system(command.str().c_str());
     if (sysResult != 0) {
         cerr << "Error compressing content" << endl;
         exit(EXIT_FAILURE);
     }
+    command.str("");
 
     // read the number of bytes from the file
-    ifstream bytesFile("bytes.temp");
+    ifstream bytesFile(tempBytes);
     bytesFile >> bytes;
     bytesFile.close();
 
     // remove temporary files
-    sysResult = system("rm *.temp*");
+    command << "rm " << tempFolder << "/*.temp*";
+    sysResult = system(command.str().c_str());
     if (sysResult != 0) {
         // ignore the error, it's just temporary files
     }

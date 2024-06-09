@@ -45,7 +45,7 @@ int main(int argc, char *argv[]) {
 
         // query database
         cout << "Querying " << filePath.stem().string() << "..." << endl;
-        vector<tuple<basic_string<char>, double>> result = database.query(signature, args.topK);
+        vector<tuple<basic_string<char>, double>> result = database.query(signature, args.topK, args.queriesFolder);
 
         // print or log results
         if (args.logFilePath.empty()) {

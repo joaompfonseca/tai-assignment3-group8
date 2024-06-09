@@ -12,7 +12,7 @@ public:
 
     string getName();
 
-    unsigned int getBits(string content);
+    unsigned int getBits(string content, string tempFolder);
 
 private:
     string name;

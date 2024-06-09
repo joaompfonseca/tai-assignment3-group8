@@ -14,7 +14,7 @@ public:
 
     void load();
 
-    vector<tuple<string, double>> query(string signature, unsigned int topK);
+    vector<tuple<string, double>> query(string signature, unsigned int topK, string queriesFolder);
 
 private:
     string databaseFolder;
