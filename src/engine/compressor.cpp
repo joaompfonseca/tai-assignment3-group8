@@ -33,10 +33,6 @@ string Compressor::getName() {
     return name;
 }
 
-void Compressor::setTempFolder(string tempFolder) {
-    this->tempFolder = tempFolder;
-}
-
 unsigned int Compressor::getBits(string content) {
     unsigned int bytes = 0;
     ostringstream command;

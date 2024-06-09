@@ -18,7 +18,8 @@ int main(int argc, char *argv[]) {
          << args << endl;
 
     // instantiate compressor
-    Compressor compressor = Compressor(args.compressionMethod, args.databaseFolder);
+    string tempFolder = args.queriesFolder; // use this folder for now
+    Compressor compressor = Compressor(args.compressionMethod, tempFolder);
 
     // instantiate database
     Database database = Database(args.databaseFolder, compressor);
@@ -29,8 +30,6 @@ int main(int argc, char *argv[]) {
     if (!args.logFilePath.empty()) {
         logger = CSVLogger(args.logFilePath);
     }
-
-    compressor.setTempFolder(args.queriesFolder);
 
     // query database
     for (const auto &entry: directory_iterator(args.queriesFolder)) {

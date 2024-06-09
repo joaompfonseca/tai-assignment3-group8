@@ -12,8 +12,6 @@ public:
 
     string getName();
 
-    void setTempFolder(string tempFolder);
-
     unsigned int getBits(string content);
 
 private:
