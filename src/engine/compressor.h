@@ -8,14 +8,17 @@ using namespace std;
 
 class Compressor {
 public:
-    explicit Compressor(string name);
+    explicit Compressor(string name, string tempFolder);
 
     string getName();
 
-    unsigned int getBits(string content, string tempFolder);
+    void setTempFolder(string tempFolder);
+
+    unsigned int getBits(string content);
 
 private:
     string name;
+    string tempFolder;
 };
 
 #endif //TAI_ASSIGNMENT3_GROUP8_COMPRESSOR_H

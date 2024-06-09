@@ -7,7 +7,7 @@
 
 using namespace std;
 
-Compressor::Compressor(string name) {
+Compressor::Compressor(string name, string tempFolder) {
     int sysResult;
     if (name == "gzip") {
         sysResult = system("gzip --version > /dev/null 2>&1");
@@ -26,13 +26,18 @@ Compressor::Compressor(string name) {
         exit(EXIT_FAILURE);
     }
     this->name = name;
+    this->tempFolder = tempFolder;
 }
 
 string Compressor::getName() {
     return name;
 }
 
-unsigned int Compressor::getBits(string content, string tempFolder) {
+void Compressor::setTempFolder(string tempFolder) {
+    this->tempFolder = tempFolder;
+}
+
+unsigned int Compressor::getBits(string content) {
     unsigned int bytes = 0;
     ostringstream command;
     int sysResult;

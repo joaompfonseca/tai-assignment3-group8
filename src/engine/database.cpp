@@ -20,7 +20,7 @@ void Database::add(string label, string signature) {
     if (cacheBits.find(label) != cacheBits.end()) {
         bits = cacheBits[label];
     } else {
-        bits = compressor.getBits(signature, databaseFolder);
+        bits = compressor.getBits(signature);
         cacheBits[label] = bits;
     }
     storage[label] = make_tuple(signature, bits);
@@ -67,11 +67,11 @@ void Database::load() {
     saveCacheBits();
 }
 
-vector<tuple<string, double>> Database::query(string qSignature, unsigned int topK, string tempFolder) {
+vector<tuple<string, double>> Database::query(string qSignature, unsigned int topK) {
     vector<tuple<string, double>> result;
 
     // calculate bits of the query signature
-    unsigned int qBits = compressor.getBits(qSignature, tempFolder);
+    unsigned int qBits = compressor.getBits(qSignature);
 
     for (auto &[eLabel, eContent]: storage) {
         string eSignature = get<0>(eContent);
@@ -79,7 +79,7 @@ vector<tuple<string, double>> Database::query(string qSignature, unsigned int to
 
         // concatenate query and entry signatures, calculate bits
         string qeSignature = qSignature + eSignature;
-        unsigned int qeBits = compressor.getBits(qeSignature, tempFolder);
+        unsigned int qeBits = compressor.getBits(qeSignature);
 
         // calculate the Normalized Compression Distance
         double ncd = ((double) (qeBits - min(qBits, eBits))) / ((double) max(qBits, eBits));

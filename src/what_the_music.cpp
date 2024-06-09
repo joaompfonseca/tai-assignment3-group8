@@ -18,7 +18,7 @@ int main(int argc, char *argv[]) {
          << args << endl;
 
     // instantiate compressor
-    Compressor compressor = Compressor(args.compressionMethod);
+    Compressor compressor = Compressor(args.compressionMethod, args.databaseFolder);
 
     // instantiate database
     Database database = Database(args.databaseFolder, compressor);
@@ -29,6 +29,8 @@ int main(int argc, char *argv[]) {
     if (!args.logFilePath.empty()) {
         logger = CSVLogger(args.logFilePath);
     }
+
+    compressor.setTempFolder(args.queriesFolder);
 
     // query database
     for (const auto &entry: directory_iterator(args.queriesFolder)) {
@@ -45,7 +47,7 @@ int main(int argc, char *argv[]) {
 
         // query database
         cout << "Querying " << filePath.stem().string() << "..." << endl;
-        vector<tuple<basic_string<char>, double>> result = database.query(signature, args.topK, args.queriesFolder);
+        vector<tuple<basic_string<char>, double>> result = database.query(signature, args.topK);
 
         // print or log results
         if (args.logFilePath.empty()) {
