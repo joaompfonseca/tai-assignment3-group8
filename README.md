@@ -36,7 +36,7 @@ It's optional, since you can use the provided executable inside the `bin` direct
 - `-h`: shows how to use the program.
 - `-d reduce_factor`: factor to reduce the counts of the Markov model to prevent overflow (int, default is 2).
 - `-l log_file_path`: path to the file where the log will be written (string, default is empty).
-- `-t temp_folder`: folder to store temporary files (string, default is queries_folder).
+- `-t temp_folder`: folder to store temporary files (string, default is `queries_folder`).
 
 #### Example
 
