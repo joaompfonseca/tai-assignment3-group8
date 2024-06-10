@@ -5,7 +5,6 @@ bin/*
 !bin/what_the_music
 cmake-build-debug
 
-*.pdf
 data/database/
 data/queries/
 data/noise/
