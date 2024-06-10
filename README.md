@@ -1,5 +1,10 @@
 # TAI Assignment 3 - Compression-based method for Music Classification
 
+## Video
+**Link:** [https://www.youtube.com/watch?v=tpOJMJ76UCI](https://www.youtube.com/watch?v=tpOJMJ76UCI)
+
+[YouTube could still be processing the video]
+
 ## Description
 
 This third assignment's goal was to explore the usage of a compression-based method for music classification. This repository contains the [report](report/report.pdf), and the source code and [executable](bin/what_the_music) of the `what_the_music` program.
