@@ -53,7 +53,6 @@ void Database::saveCacheBits() {
 void Database::load() {
     // load bits from cache
     bool cacheExists = loadCacheBits();
-    cout << cacheExists << endl;
 
     for (const auto &entry: directory_iterator(databaseFolder)) {
         path filePath = entry.path().string();
