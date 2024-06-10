@@ -100,7 +100,7 @@ def effect_job(effect, args):
     sample_duration = 30
 
     print(f"Starting reverb job with sample duration {sample_duration}")
-    foldername = f"{effect}{args[0]}"
+    foldername = f"{effect}{args[0]}" if args else effect
     create_necessary_folders(foldername)
 
     QUERIES_AUDIO_PATH = f'data/queries/{foldername}/audio'
@@ -168,43 +168,43 @@ def custom_error_handler(e):
 
 
 transformations = {
-    "raw5": (raw_job, (5,)),
-    "raw10": (raw_job, (10,)),
-    "raw15": (raw_job, (15,)),
-    "raw30": (raw_job, (30,)),
-    "raw60": (raw_job, (60,)),
-    "whitenoise_10": (whitenoise_job, (10,)),
-    "whitenoise_20": (whitenoise_job, (20,)),
-    "whitenoise_30": (whitenoise_job, (30,)),
-    "whitenoise_40": (whitenoise_job, (40,)),
-    "whitenoise_50": (whitenoise_job, (50,)),
-    "whitenoise_60": (whitenoise_job, (60,)),
-    "whitenoise_70": (whitenoise_job, (70,)),
-    "whitenoise_80": (whitenoise_job, (80,)),
-    "whitenoise_90": (whitenoise_job, (90,)),
-    "whitenoise_100": (whitenoise_job, (100,)),
-    "pinknoise_10": (pinknoise_job, (10,)),
-    "pinknoise_20": (pinknoise_job, (20,)),
-    "pinknoise_30": (pinknoise_job, (30,)),
-    "pinknoise_40": (pinknoise_job, (40,)),
-    "pinknoise_50": (pinknoise_job, (50,)),
-    "pinknoise_60": (pinknoise_job, (60,)),
-    "pinknoise_70": (pinknoise_job, (70,)),
-    "pinknoise_80": (pinknoise_job, (80,)),
-    "pinknoise_90": (pinknoise_job, (90,)),
-    "pinknoise_100": (pinknoise_job, (100,)),
-    "reverb_10": (effect_job, ("reverb", (10,))),
-    "reverb_20": (effect_job, ("reverb", (20,))),
-    "reverb_30": (effect_job, ("reverb", (30,))),
-    "reverb_40": (effect_job, ("reverb", (40,))),
-    "reverb_50": (effect_job, ("reverb", (50,))),
-    "reverb_60": (effect_job, ("reverb", (60,))),
-    "reverb_70": (effect_job, ("reverb", (70,))),
-    "reverb_80": (effect_job, ("reverb", (80,))),
-    "reverb_90": (effect_job, ("reverb", (90,))),
-    "reverb_100": (effect_job, ("reverb", (100,))),
+    # "raw5": (raw_job, (5,)),
+    # "raw10": (raw_job, (10,)),
+    # "raw15": (raw_job, (15,)),
+    # "raw30": (raw_job, (30,)),
+    # "raw60": (raw_job, (60,)),
+    # "whitenoise_10": (whitenoise_job, (10,)),
+    # "whitenoise_20": (whitenoise_job, (20,)),
+    # "whitenoise_30": (whitenoise_job, (30,)),
+    # "whitenoise_40": (whitenoise_job, (40,)),
+    # "whitenoise_50": (whitenoise_job, (50,)),
+    # "whitenoise_60": (whitenoise_job, (60,)),
+    # "whitenoise_70": (whitenoise_job, (70,)),
+    # "whitenoise_80": (whitenoise_job, (80,)),
+    # "whitenoise_90": (whitenoise_job, (90,)),
+    # "whitenoise_100": (whitenoise_job, (100,)),
+    # "pinknoise_10": (pinknoise_job, (10,)),
+    # "pinknoise_20": (pinknoise_job, (20,)),
+    # "pinknoise_30": (pinknoise_job, (30,)),
+    # "pinknoise_40": (pinknoise_job, (40,)),
+    # "pinknoise_50": (pinknoise_job, (50,)),
+    # "pinknoise_60": (pinknoise_job, (60,)),
+    # "pinknoise_70": (pinknoise_job, (70,)),
+    # "pinknoise_80": (pinknoise_job, (80,)),
+    # "pinknoise_90": (pinknoise_job, (90,)),
+    # "pinknoise_100": (pinknoise_job, (100,)),
+    # "reverb_10": (effect_job, ("reverb", (10,))),
+    # "reverb_20": (effect_job, ("reverb", (20,))),
+    # "reverb_30": (effect_job, ("reverb", (30,))),
+    # "reverb_40": (effect_job, ("reverb", (40,))),
+    # "reverb_50": (effect_job, ("reverb", (50,))),
+    # "reverb_60": (effect_job, ("reverb", (60,))),
+    # "reverb_70": (effect_job, ("reverb", (70,))),
+    # "reverb_80": (effect_job, ("reverb", (80,))),
+    # "reverb_90": (effect_job, ("reverb", (90,))),
+    # "reverb_100": (effect_job, ("reverb", (100,))),
     "reverse": (effect_job, ("reverse", ())),
-    "ambience": (ambience_job, ())
+    # "ambience": (ambience_job, ())
 }
 
 # delete files from previous runs
