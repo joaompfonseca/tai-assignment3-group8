@@ -5,10 +5,8 @@ import wave
 import multiprocessing
 
 DATABASE_AUDIO_PATH = 'data/database/audio'
+DATABASE_SIGNATURE_PATH = 'data/database/signature'
 BINARY_GET_MAX_FREQS_PATH = 'GetMaxFreqs/bin/GetMaxFreqs'
-
-# delete files from previous runs
-os.system("rm -rf data/queries/*")
 
 
 def create_necessary_folders(transformation):
@@ -45,11 +43,11 @@ def raw_job(sample_duration):
         transformer.trim(start, end)
 
         # create a new file with the segment
-        segment_filename = f"{filename.split('.')[0]}_split_{start}_{end}.wav"
+        segment_filename = f"{filename.replace('.wav', '')}_split_{start}_{end}.wav"
         transformer.build(os.path.join(DATABASE_AUDIO_PATH, filename), os.path.join(QUERIES_AUDIO_PATH, segment_filename))
 
         # get frequencies
-        freq_segment_filename = f"{filename.split('.')[0]}_split_{start}_{end}.freqs"
+        freq_segment_filename = f"{filename.replace('.wav', '')}_split_{start}_{end}.freqs"
         command = f'{BINARY_GET_MAX_FREQS_PATH} -w "{os.path.join(QUERIES_SIGNATURE_PATH, freq_segment_filename)}" "{os.path.join(QUERIES_AUDIO_PATH, segment_filename)}"'
         os.system(command)
 
@@ -73,19 +71,19 @@ def noise_job(noise_type, vol):
         transformer.trim(start, end)
         
         # create a new file with the segment
-        temp_segment_filename = f"{filename.split('.')[0]}_split_{start}_{end}_temp.wav"
+        temp_segment_filename = f"{filename.replace('.wav', '')}_split_{start}_{end}_temp.wav"
         transformer.build(os.path.join(DATABASE_AUDIO_PATH, filename), os.path.join(QUERIES_AUDIO_PATH, temp_segment_filename))
 
         # add white noise
         noise_filename = f"data/noise/{noise_type}/{noise_type}{vol}.wav"
-        segment_filename = f"{filename.split('.')[0]}_split_{start}_{end}.wav"
+        segment_filename = f"{filename.replace('.wav', '')}_split_{start}_{end}.wav"
         os.system(f'sox "{os.path.join(QUERIES_AUDIO_PATH, temp_segment_filename)}" -m "{noise_filename}" "{os.path.join(QUERIES_AUDIO_PATH, segment_filename)}"')
         
         # remove temp_segment_filename
         os.system(f'rm "{os.path.join(QUERIES_AUDIO_PATH, temp_segment_filename)}"')
 
         # get frequencies
-        freq_segment_filename = f"{filename.split('.')[0]}_split_{start}_{end}.freqs"
+        freq_segment_filename = f"{filename.replace('.wav', '')}_split_{start}_{end}.freqs"
         command = f'{BINARY_GET_MAX_FREQS_PATH} -w "{os.path.join(QUERIES_SIGNATURE_PATH, freq_segment_filename)}" "{os.path.join(QUERIES_AUDIO_PATH, segment_filename)}"'
         os.system(command)
 
@@ -120,11 +118,11 @@ def effect_job(effect, args):
         effect_func(*args)
 
         # create a new file with the segment
-        segment_filename = f"{filename.split('.')[0]}_split_{start}_{end}.wav"
+        segment_filename = f"{filename.replace('.wav', '')}_split_{start}_{end}.wav"
         transformer.build(os.path.join(DATABASE_AUDIO_PATH, filename), os.path.join(QUERIES_AUDIO_PATH, segment_filename))
 
         # get frequencies
-        freq_segment_filename = f"{filename.split('.')[0]}_split_{start}_{end}.freqs"
+        freq_segment_filename = f"{filename.replace('.wav', '')}_split_{start}_{end}.freqs"
         command = f'{BINARY_GET_MAX_FREQS_PATH} -w "{os.path.join(QUERIES_SIGNATURE_PATH, freq_segment_filename)}" "{os.path.join(QUERIES_AUDIO_PATH, segment_filename)}"'
         os.system(command)
 
@@ -148,19 +146,19 @@ def ambience_job():
         transformer.trim(start, end)
 
         # create a new file with the segment
-        temp_segment_filename = f"{filename.split('.')[0]}_split_{start}_{end}_temp.wav"
+        temp_segment_filename = f"{filename.replace('.wav', '')}_split_{start}_{end}_temp.wav"
         transformer.build(os.path.join(DATABASE_AUDIO_PATH, filename), os.path.join(QUERIES_AUDIO_PATH, temp_segment_filename))
 
         # add ambience sound
         ambience_filename = "data/noise/cafe-ambience.wav"
-        segment_filename = f"{filename.split('.')[0]}_split_{start}_{end}.wav"
+        segment_filename = f"{filename.replace('.wav', '')}_split_{start}_{end}.wav"
         os.system(f'sox "{os.path.join(QUERIES_AUDIO_PATH, temp_segment_filename)}" -m "{ambience_filename}" "{os.path.join(QUERIES_AUDIO_PATH, segment_filename)}"')
 
         # remove temp_segment_filename
         os.system(f'rm "{os.path.join(QUERIES_AUDIO_PATH, temp_segment_filename)}"')
 
         # get frequencies
-        freq_segment_filename = f"{filename.split('.')[0]}_split_{start}_{end}.freqs"
+        freq_segment_filename = f"{filename.replace('.wav', '')}_split_{start}_{end}.freqs"
         command = f'{BINARY_GET_MAX_FREQS_PATH} -w "{os.path.join(QUERIES_SIGNATURE_PATH, freq_segment_filename)}" "{os.path.join(QUERIES_AUDIO_PATH, segment_filename)}"'
         os.system(command)
 
@@ -209,6 +207,9 @@ transformations = {
     "ambience": (ambience_job, ())
 }
 
+# delete files from previous runs
+os.system("rm -rf data/queries/*")
+
 # use a pool of processes
 pool = multiprocessing.Pool(processes=multiprocessing.cpu_count())
 for func, args in transformations.values():
@@ -216,3 +217,5 @@ for func, args in transformations.values():
 
 pool.close()
 pool.join()
+
+print("\nAll transformations done.\n")
