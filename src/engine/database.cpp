@@ -26,9 +26,12 @@ void Database::add(string label, string signature) {
     storage[label] = make_tuple(signature, bits);
 }
 
-void Database::loadCacheBits() {
+bool Database::loadCacheBits() {
     string cacheFilePath = databaseFolder + "/" + compressor.getName() + ".cache";
     ifstream file(cacheFilePath);
+    if (!file.is_open()) {
+        return false;
+    }
     string line;
     while (getline(file, line)) {
         size_t delimiter = line.find(';');
@@ -36,6 +39,7 @@ void Database::loadCacheBits() {
         unsigned int bits = stoi(line.substr(delimiter + 1));
         cacheBits[label] = bits;
     }
+    return true;
 }
 
 void Database::saveCacheBits() {
@@ -48,7 +52,8 @@ void Database::saveCacheBits() {
 
 void Database::load() {
     // load bits from cache
-    loadCacheBits();
+    bool cacheExists = loadCacheBits();
+    cout << cacheExists << endl;
 
     for (const auto &entry: directory_iterator(databaseFolder)) {
         path filePath = entry.path().string();
@@ -64,7 +69,9 @@ void Database::load() {
     }
 
     // save bits to cache
-    saveCacheBits();
+    if (!cacheExists) {
+        saveCacheBits();
+    }
 }
 
 vector<tuple<string, double>> Database::query(string qSignature, unsigned int topK) {

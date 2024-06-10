@@ -22,7 +22,7 @@ private:
     unordered_map<string, unsigned int> cacheBits; // label: bits
     unordered_map<string, tuple<string, unsigned int>> storage; // label: <signature, bits>
 
-    void loadCacheBits();
+    bool loadCacheBits();
 
     void saveCacheBits();
 
